@@ -46,24 +46,40 @@ app.get("/urls", (req, res) => {
 
 
 app.post("/urls", (req, res) => {
-    console.log(req.body);
+    console.log("being triggered");
     let a = generateRandomString();
     urlDatabase[a] = req.body.longURL;
     res.redirect(`/urls/${a}`)
       
     //res.send('ok');         // Respond with 'Ok' (we will replace this)
   });
-  
-
   app.get('/urls/:shortURL', (req, res)=>{
     let templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+    //urlDatabase[req.params.shortURL] = templateVars.longURL
     res.render("urls_show", templateVars);
 })
 
+
+app.post("/urls/:shortURL/add", (req, res) =>{
+
+ 
+  urlDatabase[req.params.shortURL] = req.body.newURL;
+  
+  res.redirect("/urls");
+  
+  
+  
+  })
+ 
+
 app.get("/u/:shortURL", (req, res) => {
     //req.params.shortURL
+    
     res.redirect(urlDatabase[req.params.shortURL]);
   });
+
+
+  
 
   app.post('/urls/:shortURL/delete', (req, res)=>{
     delete urlDatabase[req.params.shortURL];
