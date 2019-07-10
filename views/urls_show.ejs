@@ -7,7 +7,7 @@
 </head>
 
 <body>
-        <%- include ./partials/_header.ejs %>
+        <% include ./partials/_header.ejs %>
   <div class="card text-center">
       <div class="card-header"></div>
       <div class="card-body">
@@ -19,7 +19,7 @@
 
 
       <h5 class="card-title">EDIT</h5>
-      <form method = "POST" action="/urls/<%= shortURL%>/add">
+      <form method = "POST" action="/urls/<%=shortURL%>/add">
           <p>
             New URL: 
             <input  type= "text" name = "newURL" value ="http://www."></input>

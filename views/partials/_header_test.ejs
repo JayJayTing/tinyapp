@@ -14,15 +14,14 @@
       <div class="form-group mb-2">
           <%
           console.log("doing something");
-          if(!user){%>
+          if(user){%>
+            <form method= "POST" action ="/logout" class= "pull-right" >
+              Welcome <%= user.email %>!
+              <input  type="submit" class = "btn btn-primary" style= "background-color: green" value= "logout" > </button>
+              </form> 
+          <%}else{%>
           <a href="/login">Login</a>
           <a href="/register">Register</a>
-          <%}else{%>
-          
-          <form method= "POST" action ="/logout" class= "pull-right" >
-            Welcome <%= user.email %>!
-            <input  type="submit" class = "btn btn-primary" style= "background-color: green" value= "logout" > </button>
-            </form> 
     
            
     
