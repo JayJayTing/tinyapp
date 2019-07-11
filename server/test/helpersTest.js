@@ -20,11 +20,14 @@ describe('userExists', function() {
     const user = userExists(testUsers, "user@example.com")
     const expectedOutput = "userRandomID";
     // Write your assert statement here
+    assert.equal(user, expectedOutput);
   });
   it('should return false if there are no valid emails', function() {
     const user = userExists(testUsers, "")
     const expectedOutput = false;
     // Write your assert statement here
+    
+    assert.equal(user, expectedOutput);
   });
 })
 
