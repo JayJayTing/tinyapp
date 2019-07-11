@@ -3,9 +3,11 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const bcrypt = require('bcrypt');
+// const userExists = require('./helpers');
+// const generateRandomString = require('./helpers');
+// const getOwner = require('./helpers')
 
-
-
+const {userExists, generateRandomString, getOwner} = require('./helpers')
 
 var cookieSession = require("cookie-session");
 app.use(cookieSession({
@@ -27,26 +29,26 @@ const users = {
 }
 
 
-function userExists(users, email){
-  for(let i in users)
-  {
-    if(email === users[i].email)
-    {
-      return i;
-    }
-  }
-  return false;
-}
+// function userExists(users, email){
+//   for(let i in users)
+//   {
+//     if(email === users[i].email)
+//     {
+//       return i;
+//     }
+//   }
+//   return false;
+// }
 
-function generateRandomString(){
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    let newString = '';
-    for(var a = 0; a < 6; a++){
-        newString += alphabet[Math.floor(Math.random() * Math.floor(alphabet.length- 1)) +1];
+// function generateRandomString(){
+//     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+//     let newString = '';
+//     for(var a = 0; a < 6; a++){
+//         newString += alphabet[Math.floor(Math.random() * Math.floor(alphabet.length- 1)) +1];
         
-    }
-    return newString;
-}
+//     }
+//     return newString;
+// }
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -116,15 +118,15 @@ app.post("/urls", (req, res) => {
     //res.send('ok');         // Respond with 'Ok' (we will replace this)
   });
 
-function getOwner(database, checkShortURL){
-  for(let shortURL in database)
-  {
-    if(shortURL === checkShortURL ){
-      return database[shortURL].userID
-    }
-  }
-  return false;
-}
+// function getOwner(database, checkShortURL){
+//   for(let shortURL in database)
+//   {
+//     if(shortURL === checkShortURL ){
+//       return database[shortURL].userID
+//     }
+//   }
+//   return false;
+// }
 
   app.get('/urls/:shortURL', (req, res)=>{
     //console.log("shows");
