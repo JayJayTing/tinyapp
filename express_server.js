@@ -2,7 +2,16 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-var cookieParser = require("cookie-parser");
+const bcrypt = require('bcrypt');
+
+
+
+
+var cookieSession = require("cookie-session");
+app.use(cookieSession({
+  name: 'session',
+  keys: ["selin the goddess"],
+}))
 
 const users = { 
   "userRandomID": {
@@ -16,7 +25,7 @@ const users = {
     password: "dishwasher-funk"
   }
 }
-app.use(cookieParser());
+
 
 function userExists(users, email){
   for(let i in users)
@@ -66,13 +75,13 @@ app.get("/hello", (req, res) => {
   });
 
   app.get("/urls/new", (req, res) => {
-    if(!req.cookies.user_id){
+    if(!req.session.user_id){
       console.log("you are logged out, please login");
       res.redirect("/login");
     }
     
     let templateVars = {
-      user: req.cookies.user_id,
+      user: req.session.user_id,
       shortURL: req.params.shortURL, 
       longURL: urlDatabase[req.params.shortURL] };
     res.render("urls_new", templateVars);
@@ -81,7 +90,7 @@ app.get("/hello", (req, res) => {
 app.get("/urls", (req, res) => {
     let templateVars = { 
       
-      user: users[req.cookies.user_id],
+      user: users[req.session.user_id],
       urls: urlDatabase };
 
       //templateVars.urls.longURL = req.body.longURL
@@ -99,7 +108,7 @@ app.post("/urls", (req, res) => {
     
     urlDatabase[a] = {};
     urlDatabase[a].longURL = req.body.longURL;
-    urlDatabase[a].userID = req.cookies.user_id;
+    urlDatabase[a].userID = req.session.user_id;
     
 
     res.redirect(`/urls/${a}`)
@@ -119,12 +128,12 @@ function getOwner(database, checkShortURL){
 
   app.get('/urls/:shortURL', (req, res)=>{
     //console.log("shows");
-    console.log("as;ldkfj;alskfdjalkdf "+req.cookies.user_id);
+    console.log("as;ldkfj;alskfdjalkdf "+req.session.user_id);
     console.log(getOwner(urlDatabase, req.params.shortURL))
-    if(req.cookies.user_id === getOwner(urlDatabase, req.params.shortURL)){
+    if(req.session.user_id === getOwner(urlDatabase, req.params.shortURL)){
 
       let templateVars = {
-      user : req.cookies.user_id,
+      user : req.session.user_id,
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL] };
       //urlDatabase[req.params.shortURL] = templateVars.longURL
@@ -173,11 +182,11 @@ app.get("/u/:shortURL", (req, res) => {
       
     if(userID)
     {
-      if(users[userID].password === req.body.password)
+      if(bcrypt.compareSync(req.body.password, users[userID].password))
       {
         console.log("rescookie done")
-        res.cookie("user_id", userID);
-
+        //res.cookie("user_id", userID);
+        req.session.user_id = userID
         
 
         res.redirect("/urls")
@@ -193,7 +202,8 @@ app.get("/u/:shortURL", (req, res) => {
 
   app.post("/logout", (req, res)=>{
     //console.log("loggedout")
-    res.clearCookie("user_id");
+    //res.clearCookie("user_id");
+    req.session.user_id = null;
     res.redirect("/urls")
   })
 
@@ -220,10 +230,11 @@ app.get("/u/:shortURL", (req, res) => {
 
 
     let rID = generateRandomString();
-    users[rID] = {id: rID, email: req.body.email, password: req.body.password}
+   
+    users[rID] = {id: rID, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10)}
     
-    res.cookie("user_id", users[rID].id)
-    
+    //res.cookie("user_id", users[rID].id)
+    req.session.user_id = users[rID].id
     res.redirect("/urls")
   })
 
