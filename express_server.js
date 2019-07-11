@@ -1,11 +1,9 @@
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080; 
 const bodyParser = require("body-parser");
 const bcrypt = require('bcrypt');
-// const userExists = require('./helpers');
-// const generateRandomString = require('./helpers');
-// const getOwner = require('./helpers')
+
 
 const {userExists, generateRandomString, getOwner} = require('./helpers')
 
@@ -29,26 +27,7 @@ const users = {
 }
 
 
-// function userExists(users, email){
-//   for(let i in users)
-//   {
-//     if(email === users[i].email)
-//     {
-//       return i;
-//     }
-//   }
-//   return false;
-// }
 
-// function generateRandomString(){
-//     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-//     let newString = '';
-//     for(var a = 0; a < 6; a++){
-//         newString += alphabet[Math.floor(Math.random() * Math.floor(alphabet.length- 1)) +1];
-        
-//     }
-//     return newString;
-// }
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -95,7 +74,7 @@ app.get("/urls", (req, res) => {
       user: users[req.session.user_id],
       urls: urlDatabase };
 
-      //templateVars.urls.longURL = req.body.longURL
+      
       
       
       console.log(templateVars.user);
@@ -115,30 +94,19 @@ app.post("/urls", (req, res) => {
 
     res.redirect(`/urls/${a}`)
       
-    //res.send('ok');         // Respond with 'Ok' (we will replace this)
+   
   });
 
-// function getOwner(database, checkShortURL){
-//   for(let shortURL in database)
-//   {
-//     if(shortURL === checkShortURL ){
-//       return database[shortURL].userID
-//     }
-//   }
-//   return false;
-// }
 
   app.get('/urls/:shortURL', (req, res)=>{
-    //console.log("shows");
-    console.log("as;ldkfj;alskfdjalkdf "+req.session.user_id);
-    console.log(getOwner(urlDatabase, req.params.shortURL))
+    
     if(req.session.user_id === getOwner(urlDatabase, req.params.shortURL)){
 
       let templateVars = {
       user : req.session.user_id,
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL] };
-      //urlDatabase[req.params.shortURL] = templateVars.longURL
+     
     res.render("urls_show", templateVars);
     }else{
       res.status(403).send("you naughty boy");
@@ -166,7 +134,7 @@ app.post("/urls/:shortURL/add", (req, res) =>{
  
 
 app.get("/u/:shortURL", (req, res) => {
-    //req.params.shortURL
+   
     
     res.redirect(urlDatabase[req.params.shortURL].longURL);
   });
@@ -187,7 +155,7 @@ app.get("/u/:shortURL", (req, res) => {
       if(bcrypt.compareSync(req.body.password, users[userID].password))
       {
         console.log("rescookie done")
-        //res.cookie("user_id", userID);
+        
         req.session.user_id = userID
         
 
@@ -199,12 +167,11 @@ app.get("/u/:shortURL", (req, res) => {
       res.status(403).send("wrong")
     }
 
-    //res.redirect("/urls")
+   
   })
 
   app.post("/logout", (req, res)=>{
-    //console.log("loggedout")
-    //res.clearCookie("user_id");
+    
     req.session.user_id = null;
     res.redirect("/urls")
   })
@@ -235,7 +202,7 @@ app.get("/u/:shortURL", (req, res) => {
    
     users[rID] = {id: rID, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10)}
     
-    //res.cookie("user_id", users[rID].id)
+    
     req.session.user_id = users[rID].id
     res.redirect("/urls")
   })
